@@ -1,10 +1,14 @@
+from re import sub
 from flask import render_template, request, url_for, redirect, flash
 from database import *
+from loguru import logger
 
 
+logger.add("log.txt")
 @app.route("/")
 @app.route("/home")
 def trang_chu():
+    logger.info("Requested to Homepage")
     return render_template("home.html", title="Home")
 
 
@@ -24,6 +28,7 @@ def insert_lop_hoc():
 
         flash("Successed!")
 
+        logger.info(f"Classroom PH{Classroom.query.filter_by(capacity=capacity).all()[-1].id}: inserted!")
         return redirect(url_for("lop_hoc"))
 
 @app.route("/classroom/update", methods=["GET","POST"])
@@ -38,6 +43,7 @@ def update_lop_hoc():
     
         flash("Successed!")
 
+        logger.info(f"Classroom PH{edit_classroom.id}: updated!")
         return redirect(url_for("lop_hoc"))
     
 @app.route("/classroom/delete/<id>/", methods=["GET", "POST"])
@@ -48,6 +54,7 @@ def delete_lop_hoc(id):
 
     flash("Deleted!")
 
+    logger.info(f"Classroom PH{del_classroom.id}: deleted!")
     return redirect(url_for("lop_hoc"))
 
 
@@ -78,7 +85,9 @@ def insert_hoc_sinh():
         db.session.commit()
 
         flash("Successed!")
-
+        
+        logger.info(f"""Classroom HS{Student.query.filter_by(first_name=first_name,
+                    last_name=last_name,date_of_birth=date_of_birth).all()[-1].id}: inserted!""")
         return redirect(url_for("hoc_sinh"))
 
 @app.route("/student/update", methods=["POST"])
@@ -100,6 +109,7 @@ def update_hoc_sinh():
     
         flash("Successed!")
 
+        logger.info(f"Classroom HS{edit_student.id}: updated!")
         return redirect(url_for("hoc_sinh"))
     
 @app.route("/student/delete/<id>/", methods=["GET", "POST"])
@@ -113,6 +123,7 @@ def delete_hoc_sinh(id):
 
     flash("Deleted!")
 
+    logger.info(f"Classroom HS{del_student.id}: deleted!")
     return redirect(url_for("hoc_sinh"))
     
 @app.route("/subject")
@@ -132,6 +143,7 @@ def insert_mon_hoc():
 
         flash("Successed!")
 
+        logger.info(f"Classroom MH{Subject.query.filter_by(name=name, capacity=capacity).all()[-1].id}: inserted!")
         return redirect(url_for("mon_hoc"))
 
 @app.route("/subject/update", methods=["GET","POST"])
@@ -146,7 +158,8 @@ def update_mon_hoc():
         db.session.commit()
     
         flash("Successed!")
-
+        
+        logger.info(f"Classroom MH{edit_subject.id}: updated!")
         return redirect(url_for("mon_hoc"))
     
 @app.route("/subject/delete/<id>/", methods=["GET", "POST"])
@@ -157,6 +170,7 @@ def delete_mon_hoc(id):
 
     flash("Deleted!")
 
+    logger.info(f"Classroom MH{del_subject.id}: deleted!")
     return redirect(url_for("mon_hoc"))
 
 @app.route("/teacher")
@@ -176,6 +190,8 @@ def insert_giao_vien():
 
         flash("Successed!")
 
+        logger.info(f"""Classroom GV{Teacher.query.filter_by(first_name=first_name,
+                    last_name=last_name, subject_taught=subject_taught).all()[-1].id}: inserted!""")
         return redirect(url_for("giao_vien"))
 
 @app.route("/teacher/update", methods=["GET","POST"])
@@ -192,6 +208,8 @@ def update_giao_vien():
     
         flash("Successed!")
 
+        logger.info(f"Classroom GV{edit_teacher.id}: updated!")
+
         return redirect(url_for("giao_vien"))
     
 @app.route("/teacher/delete/<id>/", methods=["GET", "POST"])
@@ -202,6 +220,7 @@ def delete_giao_vien(id):
 
     flash("Deleted!")
 
+    logger.info(f"Classroom GV{del_teacher.id}: deleted!")
     return redirect(url_for("giao_vien"))
     
 @app.route("/school")
@@ -230,6 +249,8 @@ def insert_truong_hoc():
 
         flash("Successed!")
 
+        logger.info(f"""Classroom LH{Class.query.filter_by(classroom_id=classroom_id,
+                    subject_id=subject_id,teacher_id=teacher_id).all()[-1].id}: inserted!""")
         return redirect(url_for("truong_hoc"))
 
 @app.route("/school/update", methods=["GET","POST"])
@@ -246,6 +267,7 @@ def update_truong_hoc():
     
         flash("Successed!")
 
+        logger.info(f"Classroom LH{edit_class.id}: updated!")
         return redirect(url_for("truong_hoc"))
     
 @app.route("/school/delete/<id>/", methods=["GET", "POST"])
@@ -256,6 +278,7 @@ def delete_truong_hoc(id):
 
     flash("Deleted!")
 
+    logger.info(f"Classroom LH{del_class.id}: deleted!")
     return redirect(url_for("truong_hoc"))
 
 
