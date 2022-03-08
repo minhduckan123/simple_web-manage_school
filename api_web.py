@@ -1,4 +1,3 @@
-from re import sub
 from flask import render_template, request, url_for, redirect, flash
 from database import *
 from loguru import logger
