@@ -1,0 +1,177 @@
+{%extends "barside.html"%}
+
+{%block header%}
+
+<div class="row">
+    <div class="col-sm-6">
+        <a href= "/classroom" type="button" class="btn btn-outline-primary btn-block">{{classroom_count}} <p>Classrooms</p></a>
+    </div>
+    <div class="col-sm-6">
+        <a href="/student" type="button" class="btn btn-outline-primary btn-block">{{student_count}} <p>Students</p></a>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-6">
+        <a href="/subject" type="button" class="btn btn-outline-primary btn-block">{{subject_count}} <p>Subjects</p></a>
+    </div>
+    <div class="col-sm-6">
+        <a href="teacher" type="button" class="btn btn-outline-primary btn-block">{{teacher_count}} <p>Teachers</p></a>
+    </div>
+</div>
+
+
+{%endblock%}
+
+{%block content%}
+
+<table class="table table-bordered">
+    <div class="row">
+        <div class="col md-12">
+            <div class="jumbotron p-3">
+                <h2>Manage <b>School </b> <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#mymodal">Add New Relationship</button></h2>
+
+                {%with messages = get_flashed_messages()%}
+
+                {%if messages%}
+                
+                {%for message in messages%}
+                
+                <div class="alert alert-success alert-dismissible" role="alert">
+
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+
+                    {{message}}
+                    
+                </div>
+                
+                {%endfor%}
+                
+                {%endif%}
+                
+                {%endwith%}
+            </div>
+            <thead>
+                <tr>
+                    <th>UID</th>
+                    <th>Classroom ID</th>
+                    <th>Subject ID</th>
+                    <th>Teacher ID</th>
+                    <th>Capacity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                {%for class in classes%}
+                    <tr>
+                        <td>{{class.uid}}</td>
+                        <td>PH{{class.class_list_id}}</td>
+                        <td>MH{{class.subject_id}}</td>
+                        <td>GV{{class.teacher_id}}</td>
+                        <td>{{classrooms.query.get(class.class_list_id).capacity}}</td>
+                        <td>
+                            <a href="/school/update/{{class.id}}" class="btn btn-outline-warning btn-xs" data-toggle="modal" data-target="#modaledit{{class.id}}">Edit</a>
+                            <a href="/school/delete/{{class.id}}" class="btn btn-outline-danger btn-xs">Delete</a>
+        
+                        </td>
+                    </tr>
+
+
+                <div id="modaledit{{class.id}}" class="modal fade" role="dialog">
+
+                    <div class="modal-dialog">
+                        
+                        <div class="modal-content">
+                            
+                            <div class="modal-header">
+                
+                                <h4 class="modal-title">Update primaryrmation</h4>
+                            </div>
+                            <div class="modal-body">
+                
+                                <form action="/school/update" method="POST">
+                                    <div class="form-group">
+                                        <label>Classroom ID:</label>
+                                        <input type="hidden" name="id" value="{{class.id}}">
+
+                                        <input type="number" class="form-control" name="class_list_id" value="{{class.class_list_id}}">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Subject ID:</label>
+
+                                        <input type="number" class="form-control" name="subject_id" value="{{class.subject_id}}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Teacher ID:</label>
+
+                                        <input type="number" class="form-control" name="teacher_id" value="{{class.teacher_id}}">
+                                    </div>
+                
+                                    <div class="form-group">
+                                        <button class="btn btn-success" type="submit">Update</button>
+                                        
+                                    </div>
+                
+                                </form>
+                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+            </tbody>
+
+
+            <div id="mymodal" class="modal fade" role="dialog">
+
+                <div class="modal-dialog">
+                    
+                    <div class="modal-content">
+                        
+                        <div class="modal-header">
+
+                            <h4 class="modal-title">Add Relationship</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="/school/insert" method="POST">
+                                <div class="form-group">
+                                    <label>Classroom ID:</label>
+                                    <input type="number" class="form-control" name="class_list_id" required="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Subject ID:</label>
+                                    <input type="number" class="form-control" name="subject_id" required="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Teacher ID:</label>
+                                    <input type="number" class="form-control" name="teacher_id" required="1">
+                                </div>
+
+                                <div class="form-group">
+                                    <button class="btn btn-success" type="submit">Add relationship</button>
+                                    
+                                </div>
+
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</table>
+
+
+{%endblock%}
